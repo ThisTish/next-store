@@ -8,6 +8,13 @@
       "when": 1730024470334,
       "tag": "0000_awesome_black_bolt",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1730106870934,
+      "tag": "0001_smart_wallop",
+      "breakpoints": true
     }
   ]
 }
