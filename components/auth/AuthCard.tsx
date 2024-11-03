@@ -1,3 +1,5 @@
+import Link from "next/link"
+import { Button } from "../ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import BackButton from "./BackButton"
 import Socials from "./Socials"
@@ -30,8 +32,11 @@ const AuthCard = ({
 					<Socials />
 				</CardFooter>
 			)}
-				<CardFooter >
+				<CardFooter className="justify-between">
 					<BackButton href={backButtonHref} label={backButtonLabel} />
+					<Button variant={'link'}>
+						<Link href="/auth/forgot-password">Forgot password?</Link>
+					</Button>
 				</CardFooter>
 		</Card>
 	);

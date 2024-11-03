@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import "./globals.css"
-import Link from "next/link"
-
 import Nav from "@/components/navigation/Nav"
+import { cn } from "@/lib/utils"
+
 
 
 export const metadata: Metadata = {
@@ -15,8 +15,7 @@ export default function RootLayout({
   children: React.ReactNode}>) {
   return (
     <html lang="en">
-      <body
-      >
+      <body className='px-6 max-w-7xl mx-auto'>
         <Nav />
         {children}
       </body>

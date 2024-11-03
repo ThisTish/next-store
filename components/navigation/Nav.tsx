@@ -1,14 +1,14 @@
 import { auth } from "@/server/auth"
 import Logo from "./Logo"
 import UserBtn from "./UserBtn"
-import { Button } from "../ui/button"
+import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { LogIn } from 'lucide-react'
 
 const Nav = async () => {
 	const session = await auth()
 	return (
-		<header className="bg-slate-400 py-4">
+		<header className="py-8">
 			<ul className="flex justify-between">
 				<li>
 					<Link href='/'>
