@@ -11,7 +11,13 @@ import { Input } from "../ui/input"
 import { emailSignin } from "@/server/actions/emailSignin"
 import { useAction } from 'next-safe-action/hooks'
 import { cn } from "@/lib/utils"
+import { useState } from "react"
+import Link from "next/link"
+
+
+
 const LoginForm = () => {
+	const [error, setError] = useState('')
 
 	const form = useForm({
 		resolver: zodResolver(LoginSchema),
@@ -22,7 +28,9 @@ const LoginForm = () => {
 	})
 
 	const { execute, status, } = useAction(emailSignin, {
+		onSuccess(data) {
 
+		}
 	})
 
 	const onSubmit = (values: z.infer<typeof LoginSchema>) => {
@@ -35,7 +43,7 @@ const LoginForm = () => {
 				<div>
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)}>
-							
+
 							{/* email */}
 							<FormField
 								control={form.control}
@@ -44,7 +52,7 @@ const LoginForm = () => {
 									<FormItem>
 										<FormLabel>Email</FormLabel>
 										<FormControl>
-											<Input {...field}  placeholder="you@gmail.com" type="email" autoComplete="email"/>
+											<Input {...field} placeholder="you@gmail.com" type="email" autoComplete="email" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -59,21 +67,26 @@ const LoginForm = () => {
 									<FormItem>
 										<FormLabel>Password</FormLabel>
 										<FormControl>
-											<Input {...field}  placeholder="********" type="password" autoComplete="password"/>
+											<Input {...field} placeholder="********" type="password" autoComplete="password" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
 
-								<Button 
-									className={cn('mx-auto my-3 w-full', 
-										status === 'executing' ? 'animate-pulse' : '')} 
-									type="submit" 
-								>
-									Login</Button>
-								<hr className="mt-3"/>
-							
+							<Button
+								className={cn('mx-auto my-3 w-full',
+									status === 'executing' ? 'animate-pulse' : '')}
+								type="submit"
+							>
+								Login
+							</Button>
+
+							<Button variant={'link'} >
+								<Link href="/auth/forgot-password">Forgot password?</Link>
+							</Button>
+							<hr className="mt-3" />
+
 						</form>
 
 					</Form>

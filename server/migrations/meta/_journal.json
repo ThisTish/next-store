@@ -22,6 +22,48 @@
       "when": 1730636801178,
       "tag": "0002_bright_valeria_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1731227963245,
+      "tag": "0003_previous_the_executioner",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1731228314495,
+      "tag": "0004_minor_fantastic_four",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1731229124987,
+      "tag": "0005_flowery_black_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1731229794306,
+      "tag": "0006_condemned_redwing",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1731229845861,
+      "tag": "0007_melted_lord_hawal",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1731229925861,
+      "tag": "0008_abandoned_rage",
+      "breakpoints": true
     }
   ]
 }

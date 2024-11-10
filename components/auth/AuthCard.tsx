@@ -34,9 +34,7 @@ const AuthCard = ({
 			)}
 				<CardFooter className="justify-between">
 					<BackButton href={backButtonHref} label={backButtonLabel} />
-					<Button variant={'link'}>
-						<Link href="/auth/forgot-password">Forgot password?</Link>
-					</Button>
+				
 				</CardFooter>
 		</Card>
 	);
