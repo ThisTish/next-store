@@ -13,12 +13,17 @@ import { useAction } from 'next-safe-action/hooks'
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 import Link from "next/link"
-
+import FormSuccess from "./FormSuccess"
+import FormError from "./FormError"
+import { useRouter } from "next/navigation"
 
 
 const LoginForm = () => {
 	const [error, setError] = useState('')
-
+	const [success, setSuccess] = useState('')
+	
+	const router = useRouter()
+	
 	const form = useForm({
 		resolver: zodResolver(LoginSchema),
 		defaultValues: {
@@ -29,12 +34,18 @@ const LoginForm = () => {
 
 	const { execute, status, } = useAction(emailSignin, {
 		onSuccess(data) {
-
+			if(data.data?.error){
+				setError(data.data.error)
+			}
+			if(data.data?.success){
+				setSuccess(data.data.success)
+			}
 		}
 	})
 
 	const onSubmit = (values: z.infer<typeof LoginSchema>) => {
 		execute(values)
+		router.push('/')
 	}
 
 	return (
@@ -81,6 +92,9 @@ const LoginForm = () => {
 							>
 								Login
 							</Button>
+
+							<FormSuccess message={success} />
+							<FormError message={error} />
 
 							<Button variant={'link'} >
 								<Link href="/auth/forgot-password">Forgot password?</Link>
