@@ -60,5 +60,5 @@ export const newVerification = async (token: string ) =>{
 	}).where(eq(users.email, existingToken.email))
 
 	await db.delete(emailTokens).where(eq(emailTokens.id, existingToken.id))
-	return { success: 'Email verified'}
+	return { success: `Email verified! You can now login`}
 }

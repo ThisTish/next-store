@@ -15,10 +15,14 @@ export const emailSignin = actionClient
 			where: eq(users.email, email)
 		})
 
-		if(existingUser?.email !== email){
+		if(!existingUser){
+			return {error: "User not found"}
+		}
+
+		if(existingUser.email !== email){
 			return {error: "Email not found"}
 		}
-		if(!existingUser?.emailVerified){
+		if(!existingUser.emailVerified){
 			// send email verification code
 			return {error: "Email is not verified"}
 		}

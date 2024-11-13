@@ -3,7 +3,7 @@
 import { createSafeActionClient } from "next-safe-action"
 import RegisterSchema from '@/types/register-schema'
 import * as bcrypt from 'bcrypt'
-import { db } from ".."
+import { db } from "@/server"
 import { eq } from "drizzle-orm"
 import { users } from "../schema"
 import { generateEmailVerificationToken } from '@/server/actions/tokens'

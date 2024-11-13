@@ -26,7 +26,6 @@ const EmailVerificationForm = () => {
 			if (data.error) setError(data.error)
 			if (data.success) {
 				setSuccess(data.success)
-				router.push('/auth/login')
 			}
 		})
 

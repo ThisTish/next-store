@@ -1,8 +1,6 @@
 import EmailVerificationForm from "@/components/auth/EmailVerificationForm"
 
-const NewVerificationTokenPage = () => 
-	// EmailVerificationForm
-	{
+const NewVerificationTokenPage = () => {
 	return (
 		<EmailVerificationForm />
 	)

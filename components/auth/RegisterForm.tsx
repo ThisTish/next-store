@@ -42,6 +42,7 @@ const RegisterForm = () => {
 
 	const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
 		execute(values)
+		form.reset()
 	}
 
 	return (

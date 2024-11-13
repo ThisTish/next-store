@@ -9,7 +9,6 @@ import {
 } from "drizzle-orm/pg-core"
 import type { AdapterAccount } from "next-auth/adapters"
 import { createId } from '@paralleldrive/cuid2'
-import { create } from "domain"
 
 
 export const RoleEnum = pgEnum('roles', ['user', 'admin'])
