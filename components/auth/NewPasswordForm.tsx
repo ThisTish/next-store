@@ -1,40 +1,34 @@
-'use client'
-
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
+
+'use client'
 import AuthCard from "./AuthCard"
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
-
-import LoginSchema from '@/types/login-schema'
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-
 import * as z from 'zod'
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
-import { emailSignin } from "@/server/actions/emailSignin"
 import { useAction } from 'next-safe-action/hooks'
 import { cn } from "@/lib/utils"
+import { useState } from "react"
 import Link from "next/link"
 import FormSuccess from "./FormSuccess"
 import FormError from "./FormError"
+import NewPasswordSchema from "@/types/new-password-schema"
+import { newPassword } from '@/server/actions/newPassword'
 
-
-const LoginForm = () => {
+const NewPasswordForm = () => {
 	const [error, setError] = useState('')
 	const [success, setSuccess] = useState('')
-	
-	const router = useRouter()
-	
-	const form = useForm({
-		resolver: zodResolver(LoginSchema),
+		
+	const form = useForm<z.infer<typeof NewPasswordSchema>>({
+		resolver: zodResolver(NewPasswordSchema),
 		defaultValues: {
-			email: '',
-			password: ''
+			newPassword: '',
+			token: ''
 		}
 	})
 
-	const { execute, status, } = useAction(emailSignin, {
+	const { execute, status, } = useAction(newPassword, {
 		onSuccess(data) {
 			if(data.data?.error){
 				setError(data.data.error)
@@ -45,42 +39,40 @@ const LoginForm = () => {
 		}
 	})
 
-	const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+	const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
 		execute(values)
-		router.push('/')
 	}
 
 	return (
 		<>
-			<AuthCard cardTitle="Welcome Back" backButtonHref="/auth/register" backButtonLabel="Create New Account" showSocials>
+			<AuthCard cardTitle="Reset Password" backButtonHref="/auth/login" backButtonLabel="Back to Login" showSocials>
 				<div>
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)}>
 
-							{/* email */}
+							{/* token */}
 							<FormField
 								control={form.control}
-								name="email"
+								name="token"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Email</FormLabel>
+										<FormLabel>Token</FormLabel>
 										<FormControl>
-											<Input {...field} placeholder="you@gmail.com" type="email" autoComplete="email" />
+											<Input {...field} placeholder="Enter your token" type="text" value={field.value ?? ''} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-
-							{/* password */}
+							{/* new password */}
 							<FormField
 								control={form.control}
-								name="password"
+								name="newPassword"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Password</FormLabel>
+										<FormLabel>New Password</FormLabel>
 										<FormControl>
-											<Input {...field} placeholder="********" type="password" autoComplete="password" />
+											<Input {...field} placeholder="********" type="password" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -92,17 +84,12 @@ const LoginForm = () => {
 									status === 'executing' ? 'animate-pulse' : '')}
 								type="submit"
 							>
-								Login
+								Set New Password
 							</Button>
 
 							<FormSuccess message={success} />
 							<FormError message={error} />
-
-							<Button variant={'link'} >
-								<Link href="/auth/forgot-password">Forgot password?</Link>
-							</Button>
-							<hr className="mt-3" />
-
+							
 						</form>
 
 					</Form>
@@ -113,4 +100,4 @@ const LoginForm = () => {
 	)
 }
 
-export default LoginForm
+export default NewPasswordForm

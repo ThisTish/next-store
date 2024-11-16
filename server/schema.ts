@@ -64,3 +64,33 @@ export const emailTokens = pgTable(
 		}),
 	})
 )
+
+export const passwordResetTokens = pgTable(
+	"passwordResetTokens",
+	{
+		id: text("id").notNull().$defaultFn(() => createId()),
+		token: text("token").notNull(),
+		expires: timestamp("expires", { mode: "date" }).notNull(),
+		email: text("email").notNull()
+	},
+	(verificationToken) => ({
+		compositePk: primaryKey(
+			verificationToken.id, verificationToken.token
+		)
+	})
+)
+
+
+export const twoFactorTokens = pgTable(
+	"twoFactorTokens",
+	{
+		id: text("id").notNull().$defaultFn(() => createId()),
+		token: text("token").notNull(),
+		expires: timestamp("expires", { mode: "date" }).notNull(),
+		email: text("email").notNull()
+	},
+	(verificationToken) => ({
+		compositePk: primaryKey(verificationToken.id, verificationToken.token
+		)
+	})
+)
