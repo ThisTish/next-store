@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm"
 import { users } from "../schema"
 import { generateEmailVerificationToken } from '@/server/actions/tokens'
 import { sendVerificationEmail } from "./email"
+import { existingUserByEmail } from "./existingUser"
 
 const action = createSafeActionClient()
 
@@ -18,11 +19,9 @@ export const emailRegister = action
 		const hashPassword = await bcrypt.hash(password, 10)
 
 		// check for existing user
-		const existingUser = await db.query.users.findFirst({
-			where: eq(users.email, email)
-		})
+		const existingUser = await existingUserByEmail(email)
 
-		if (existingUser) {
+		if (existingUser && 'emailVerified' in existingUser) {
 			if (!existingUser.emailVerified) {
 				const verificationToken = await generateEmailVerificationToken(email)
 				await sendVerificationEmail(verificationToken[0].email, verificationToken[0].token)
@@ -40,7 +39,7 @@ export const emailRegister = action
 
 		const verificationToken = await generateEmailVerificationToken(email)
 
-		await sendVerificationEmail( verificationToken[0].email, verificationToken[0].token)
+		await sendVerificationEmail(verificationToken[0].email, verificationToken[0].token)
 
 		return { success: 'User created, please verify your email' }
 	})

@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import AuthCard from "./AuthCard"
@@ -99,7 +99,7 @@ const LoginForm = () => {
 							<FormError message={error} />
 
 							<Button variant={'link'} >
-								<Link href="/auth/forgot-password">Forgot password?</Link>
+								<Link href="/auth/reset-password">Forgot password?</Link>
 							</Button>
 							<hr className="mt-3" />
 

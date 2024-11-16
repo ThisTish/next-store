@@ -1,6 +1,6 @@
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
+"use client"
 
-'use client'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import AuthCard from "./AuthCard"
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,21 +10,23 @@ import { Input } from "../ui/input"
 import { useAction } from 'next-safe-action/hooks'
 import { cn } from "@/lib/utils"
 import { useState } from "react"
-import Link from "next/link"
 import FormSuccess from "./FormSuccess"
 import FormError from "./FormError"
 import NewPasswordSchema from "@/types/new-password-schema"
 import { newPassword } from '@/server/actions/newPassword'
+import { useSearchParams } from "next/navigation"
 
 const NewPasswordForm = () => {
 	const [error, setError] = useState('')
 	const [success, setSuccess] = useState('')
+
+	const searchParams = useSearchParams()
+	const token = searchParams.get('token')
 		
 	const form = useForm<z.infer<typeof NewPasswordSchema>>({
 		resolver: zodResolver(NewPasswordSchema),
 		defaultValues: {
-			newPassword: '',
-			token: ''
+			newPassword: ''
 		}
 	})
 
@@ -40,7 +42,7 @@ const NewPasswordForm = () => {
 	})
 
 	const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
-		execute(values)
+		execute({newPassword: values.newPassword, token})
 	}
 
 	return (
@@ -50,20 +52,6 @@ const NewPasswordForm = () => {
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)}>
 
-							{/* token */}
-							<FormField
-								control={form.control}
-								name="token"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Token</FormLabel>
-										<FormControl>
-											<Input {...field} placeholder="Enter your token" type="text" value={field.value ?? ''} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
 							{/* new password */}
 							<FormField
 								control={form.control}
@@ -72,7 +60,7 @@ const NewPasswordForm = () => {
 									<FormItem>
 										<FormLabel>New Password</FormLabel>
 										<FormControl>
-											<Input {...field} placeholder="********" type="password" />
+											<Input {...field} placeholder="********" type="password" disabled={status === 'executing'}/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
