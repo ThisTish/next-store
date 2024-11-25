@@ -22,6 +22,8 @@ import { Switch } from "../ui/switch"
 import FormError from "../auth/FormError"
 import FormSuccess from "../auth/FormSuccess"
 import { useState } from "react"
+import { useAction } from "next-safe-action/hooks"
+import settings from "@/server/actions/settings"
 
 
 type SettingsFormProps = {
@@ -29,8 +31,8 @@ type SettingsFormProps = {
 }
 
 const SettingsForm = (session: SettingsFormProps) => {
-	const [error, setError] = useState<string | null>(null)
-	const [success, setSuccess] = useState<string | null>(null)
+	const [error, setError] = useState('')
+	const [success, setSuccess] = useState('')
 	const [avatarUploading, setAvatarUploading] = useState(false)
 
 
@@ -39,16 +41,33 @@ const SettingsForm = (session: SettingsFormProps) => {
 			name: session.session.user?.name || undefined,
 			email: session.session.user?.email || undefined,
 			image: session.session.user?.image || undefined,
-			// isTwoFactorEnabled: session.session.user?.isTwoFactorEnabled || undefined,
+			isTwoFactorEnabled: session.session.user?.isTwoFactorEnabled || undefined,
 			password: undefined,
 			newPassword: undefined
 
 		}
 	})
 
+	const {execute, status}= useAction(settings, {
+		onExecute:() =>{
+			setError('')
+			setSuccess('')
+		},
+		onSuccess:(data) =>{
+			if(data.data?.success){
+				setSuccess(data.data.success)
+			}
+			if(data.data?.error){
+				setError(data.data.error)
+			}
+		},
+		onError: (error) =>{
+			setError('Something went wrong')
+		}
+	})
+
 	const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
-		console.log(values)
-		// execute(values)
+		execute(values)
 	}
 
 
@@ -80,7 +99,7 @@ const SettingsForm = (session: SettingsFormProps) => {
 						<FormItem>
 							<FormLabel>Email</FormLabel>
 							<FormControl>
-								<Input placeholder="Jane Doe" disabled={status === 'executing'} {...field} />
+								<Input placeholder="name@gmail.com" disabled={status === 'executing'} {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -127,7 +146,11 @@ const SettingsForm = (session: SettingsFormProps) => {
 						<FormItem>
 							<FormLabel>Password</FormLabel>
 							<FormControl>
-								<Input placeholder="**********" disabled={status === 'executing'} {...field} />
+								<Input 
+								placeholder="**********" 
+								disabled={status === 'executing' || session.session.user?.isOAuth} 
+								type="password"
+								{...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -140,7 +163,11 @@ const SettingsForm = (session: SettingsFormProps) => {
 						<FormItem>
 							<FormLabel>New Password</FormLabel>
 							<FormControl>
-								<Input placeholder="*********" disabled={status === 'executing'} {...field} />
+								<Input 
+								placeholder="*********" 
+								disabled={status === 'executing' || session.session.user?.isOAuth} 
+								type="password"
+								{...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -158,7 +185,8 @@ const SettingsForm = (session: SettingsFormProps) => {
 							</FormDescription>
 							<FormControl>
 								<Switch 
-								disabled={status === 'executing'}
+								onCheckedChange={field.onChange}
+								disabled={status === 'executing' || session.session.user?.isOAuth}
 								checked={form.getValues('isTwoFactorEnabled') || false}
 								/>
 							</FormControl>
@@ -166,8 +194,8 @@ const SettingsForm = (session: SettingsFormProps) => {
 						</FormItem>
 					)}
 				/>
-					<FormError />
-					<FormSuccess />
+					<FormError message={error}/>
+					<FormSuccess message={success}/>
 				<Button disabled={status === 'executing' || avatarUploading} type="submit">Update your settings </Button>
 			</form>
 		</Form>
