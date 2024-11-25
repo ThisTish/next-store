@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 import Nav from "@/components/navigation/Nav"
 import { cn } from "@/lib/utils"
+import { ThemeProvider } from "@/components/providers/ThemeProvider"
 
 
 
@@ -16,8 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className='px-6 max-w-7xl mx-auto'>
+        <ThemeProvider attribute="class"
+            defaultTheme="system"
+            enableSystem
+            >
         <Nav />
         {children}
+        </ThemeProvider>
       </body>
     </html>
   )

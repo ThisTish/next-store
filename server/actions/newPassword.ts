@@ -16,7 +16,6 @@ const action = createSafeActionClient()
 export const newPassword = action
 	.schema(NewPasswordSchema)
 	.action(async ({ parsedInput: { newPassword, token } }) => {
-		console.log('newPassword', newPassword)
 
 		const pool = new Pool({
 			connectionString: process.env.POSTGRES_URL
@@ -38,14 +37,7 @@ export const newPassword = action
 			})
 			if (!existingUser) return { error: 'User not found' }
 
-
-			// if ('email' in existingToken) {
-			// 	const existingUser = await existingUserByEmail(existingToken.email)
-			// 	if ('error' in existingUser) return { error: existingUser.error }
-		console.log('newPassword2', newPassword)
-
 			const hashedPassword = await hash(newPassword, 10)
-			console.log('Hashed Password:', hashedPassword);
 
 
 			await dbPool.transaction(async (tx) => {
@@ -56,10 +48,6 @@ export const newPassword = action
 
 				await tx.delete(passwordResetTokens).where(eq(passwordResetTokens.id, existingToken.id))
 			})
-			const updatedUser = await db.query.users.findFirst({
-				where: eq(users.id, existingUser.id),
-			  });
-			  console.log('Updated User:', updatedUser);
 
 			return { success: 'Password updated' }
 		}
