@@ -9,7 +9,9 @@ import { eq } from "drizzle-orm"
 import { users } from "@/server/schema"
 import { compare } from "bcrypt"
 
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
+	
 	adapter: DrizzleAdapter(db),
 	secret: process.env.AUTH_SECRET,
 	session:{
@@ -29,6 +31,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 		}),
 		Credentials({
+			type: 'credentials',
+			credentials: {
+				email: { label: "Email", type: "text" },
+				password: { label: "Password", type: "password" }
+			},
 			authorize: async (credentials) =>{
 				const validatedFields = LoginSchema.safeParse(credentials)
 

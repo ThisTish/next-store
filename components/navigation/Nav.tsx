@@ -6,6 +6,7 @@ import Link from "next/link"
 import { LogIn } from 'lucide-react'
 
 const Nav = async () => {
+
 	const session = await auth()
 	return (
 		<header className="py-8">

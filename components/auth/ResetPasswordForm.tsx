@@ -69,6 +69,7 @@ const ResetPasswordForm = () => {
 								className={cn('mx-auto my-3 w-full',
 									status === 'executing' ? 'animate-pulse' : '')}
 								type="submit"
+								disabled={status === 'executing'}
 							>
 								Reset Password
 							</Button>

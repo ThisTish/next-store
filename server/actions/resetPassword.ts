@@ -8,11 +8,11 @@ import { sendPasswordResetTokenEmail } from "./email"
 
 const action = createSafeActionClient()
 
-
 export const resetPassword = action
 	.schema(ResetPasswordSchema)
 	.action(async ({ parsedInput: { email } }) =>{
 		const existingUser = await existingUserByEmail(email)
+		if(!existingUser) return { error: 'User not found' }
 
 		const passwordResetToken = await generatePasswordResetToken(email)
 		if(!passwordResetToken) return { error: 'Token not generated' }

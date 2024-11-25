@@ -8,7 +8,7 @@ import { passwordResetTokens, users } from "../schema"
 import { eq } from "drizzle-orm"
 import { hash } from "bcrypt"
 import { existingUserByEmail } from "./existingUser"
-import { Pool} from '@neondatabase/serverless'
+import { Pool } from '@neondatabase/serverless'
 import { drizzle } from "drizzle-orm/neon-serverless"
 
 const action = createSafeActionClient()
@@ -16,6 +16,7 @@ const action = createSafeActionClient()
 export const newPassword = action
 	.schema(NewPasswordSchema)
 	.action(async ({ parsedInput: { newPassword, token } }) => {
+		console.log('newPassword', newPassword)
 
 		const pool = new Pool({
 			connectionString: process.env.POSTGRES_URL
@@ -31,26 +32,35 @@ export const newPassword = action
 			const hasExpired = new Date(existingToken.expires ?? 0) < new Date()
 			if (hasExpired) return { error: 'Token has expired' }
 		}
-if('email' in existingToken){
-		const existingUser = await db.query.users.findFirst({
-			where: eq(users.email, existingToken.email)
-		})
-		if(!existingUser) return { error: 'User not found' }
-	
-		// if ('email' in existingToken) {
-		// 	const existingUser = await existingUserByEmail(existingToken.email)
-		// 	if ('error' in existingUser) return { error: existingUser.error }
+		if ('email' in existingToken) {
+			const existingUser = await db.query.users.findFirst({
+				where: eq(users.email, existingToken.email)
+			})
+			if (!existingUser) return { error: 'User not found' }
+
+
+			// if ('email' in existingToken) {
+			// 	const existingUser = await existingUserByEmail(existingToken.email)
+			// 	if ('error' in existingUser) return { error: existingUser.error }
+		console.log('newPassword2', newPassword)
 
 			const hashedPassword = await hash(newPassword, 10)
+			console.log('Hashed Password:', hashedPassword);
+
 
 			await dbPool.transaction(async (tx) => {
-				tx.update(users)
+				await tx
+					.update(users)
 					.set({ password: hashedPassword })
 					.where(eq(users.id, existingUser.id))
 
 				await tx.delete(passwordResetTokens).where(eq(passwordResetTokens.id, existingToken.id))
 			})
-			
+			const updatedUser = await db.query.users.findFirst({
+				where: eq(users.id, existingUser.id),
+			  });
+			  console.log('Updated User:', updatedUser);
+
 			return { success: 'Password updated' }
 		}
 	})
