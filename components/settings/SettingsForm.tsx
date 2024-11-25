@@ -24,6 +24,8 @@ import FormSuccess from "../auth/FormSuccess"
 import { useState } from "react"
 import { useAction } from "next-safe-action/hooks"
 import settings from "@/server/actions/settings"
+import { UploadButton } from "@uploadthing/react"
+import { OurFileRouter } from "@/app/api/uploadthing/core"
 
 
 type SettingsFormProps = {
@@ -48,20 +50,20 @@ const SettingsForm = (session: SettingsFormProps) => {
 		}
 	})
 
-	const {execute, status}= useAction(settings, {
-		onExecute:() =>{
+	const { execute, status } = useAction(settings, {
+		onExecute: () => {
 			setError('')
 			setSuccess('')
 		},
-		onSuccess:(data) =>{
-			if(data.data?.success){
+		onSuccess: (data) => {
+			if (data.data?.success) {
 				setSuccess(data.data.success)
 			}
-			if(data.data?.error){
+			if (data.data?.error) {
 				setError(data.data.error)
 			}
 		},
-		onError: (error) =>{
+		onError: (error) => {
 			setError('Something went wrong')
 		}
 	})
@@ -120,10 +122,29 @@ const SettingsForm = (session: SettingsFormProps) => {
 									<Image
 										className="rounded-full"
 										src={form.getValues('image')!}
-										width={40}
-										height={40}
+										width={42}
+										height={42}
 										alt={session.session.user?.name ?? 'Profile pic'} />
 								}
+								<UploadButton<OurFileRouter, "avatarUploader">
+									className="scale-75 ut-button:ring-primary  ut-label:bg-red-50  ut-button:bg-primary/75  hover:ut-button:bg-primary/100 ut:button:transition-all ut-button:duration-500  ut-label:hidden ut-allowed-content:hidden"
+									endpoint="avatarUploader"
+									onUploadBegin={() => setAvatarUploading(true)}
+									onUploadError={(error) => {
+										form.setError('image', {message: error.message})
+										setAvatarUploading(false)
+										return
+									}}
+									onClientUploadComplete={(res) =>{
+										form.setValue('image', res[0].url!)
+										setAvatarUploading(false)
+									}}
+									content={{
+										button({ready}) {
+											return ready ? 'Change picture' : 'Uploading...';
+										}
+									}}
+								/>
 							</div>
 							<FormControl>
 								<Input
@@ -146,11 +167,11 @@ const SettingsForm = (session: SettingsFormProps) => {
 						<FormItem>
 							<FormLabel>Password</FormLabel>
 							<FormControl>
-								<Input 
-								placeholder="**********" 
-								disabled={status === 'executing' || session.session.user?.isOAuth} 
-								type="password"
-								{...field} />
+								<Input
+									placeholder="**********"
+									disabled={status === 'executing' || session.session.user?.isOAuth}
+									type="password"
+									{...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -163,11 +184,11 @@ const SettingsForm = (session: SettingsFormProps) => {
 						<FormItem>
 							<FormLabel>New Password</FormLabel>
 							<FormControl>
-								<Input 
-								placeholder="*********" 
-								disabled={status === 'executing' || session.session.user?.isOAuth} 
-								type="password"
-								{...field} />
+								<Input
+									placeholder="*********"
+									disabled={status === 'executing' || session.session.user?.isOAuth}
+									type="password"
+									{...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -184,18 +205,18 @@ const SettingsForm = (session: SettingsFormProps) => {
 								Enable two factor authentication
 							</FormDescription>
 							<FormControl>
-								<Switch 
-								onCheckedChange={field.onChange}
-								disabled={status === 'executing' || session.session.user?.isOAuth}
-								checked={field.value || false}
+								<Switch
+									onCheckedChange={field.onChange}
+									disabled={status === 'executing' || session.session.user?.isOAuth}
+									checked={field.value || false}
 								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
-					<FormError message={error}/>
-					<FormSuccess message={success}/>
+				<FormError message={error} />
+				<FormSuccess message={success} />
 				<Button disabled={status === 'executing' || avatarUploading} type="submit">Update your settings </Button>
 			</form>
 		</Form>
