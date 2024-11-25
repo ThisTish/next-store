@@ -187,7 +187,7 @@ const SettingsForm = (session: SettingsFormProps) => {
 								<Switch 
 								onCheckedChange={field.onChange}
 								disabled={status === 'executing' || session.session.user?.isOAuth}
-								checked={form.getValues('isTwoFactorEnabled') || false}
+								checked={field.value || false}
 								/>
 							</FormControl>
 							<FormMessage />
