@@ -9,6 +9,8 @@ const SettingsPage = async () => {
 	if(!session) redirect('/')
 	
 	if(session)
+
+		
 	return (
 		<div>
 			<h1>Settings</h1>
