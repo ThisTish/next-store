@@ -3,10 +3,11 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Toggle } from '../ui/toggle'
-import { BoldIcon, ItalicIcon, ListOrderedIcon, Strikethrough, StrikethroughIcon } from 'lucide-react'
+import { BoldIcon, ItalicIcon, ListOrderedIcon, StrikethroughIcon } from 'lucide-react'
 import { ListBulletIcon } from '@radix-ui/react-icons'
 import { useFormContext } from 'react-hook-form'
 import Placeholder from '@tiptap/extension-placeholder'
+import { useEffect } from 'react'
 
 
 const Tiptap = ({ val }: { val: string }) => {
@@ -47,6 +48,10 @@ const Tiptap = ({ val }: { val: string }) => {
 		},
 		content: val,
 	})
+
+	useEffect(() =>{
+		if(editor?.isEmpty) editor.commands.setContent(val)
+	}, [val])
 
 	return (
 		<div className='flex flex-col gap-1'>

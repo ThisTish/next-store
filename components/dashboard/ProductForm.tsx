@@ -8,7 +8,6 @@ import { toast } from "sonner"
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
@@ -26,7 +25,9 @@ import { DollarSign } from "lucide-react"
 import Tiptap from "./TipTap"
 import { useAction } from "next-safe-action/hooks"
 import { createProduct } from "@/server/actions/createProduct"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
+import getProduct from "@/server/actions/get-product"
+import { useEffect } from "react"
 
 const ProductForm = () => {
 
@@ -41,6 +42,33 @@ const ProductForm = () => {
 	})
 
 	const router = useRouter()
+
+	const searchParams = useSearchParams()
+	const editMode = searchParams.get('id')
+
+	const checkProduct = async (id: number) =>{
+		if(editMode){
+			const data = await getProduct(id)
+			if(data.error){
+				toast.error(data.error)
+				router.push('/dashboard/products')
+				return
+			}
+			if(data.success){
+				const id = parseInt(editMode)
+				createProductForm.setValue("title", data.success.title)
+				createProductForm.setValue("description", data.success.description)
+				createProductForm.setValue("price", data.success.price)
+				createProductForm.setValue("id", id)
+			}
+		}
+	}
+
+	useEffect(() =>{
+		if(editMode){
+			checkProduct(parseInt(editMode))
+		}
+	}, [])
 
 	const { execute, status } = useAction(createProduct, {
 		onSuccess: (data) => {
@@ -58,7 +86,12 @@ const ProductForm = () => {
 		},
 
 		onExecute: (data) => {
+			if(editMode){
+				toast.loading('Updating Product')
+			}
+			if(!editMode){
 			toast.loading('Creating Product')
+			}
 		},
 		onError: (error) => {
 			console.log(error)
@@ -73,8 +106,7 @@ const ProductForm = () => {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Card Title</CardTitle>
-				<CardDescription>Card Description</CardDescription>
+				<CardTitle>{editMode ? "Edit Product" : "Create Product"}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<Form {...createProductForm}>
@@ -139,7 +171,7 @@ const ProductForm = () => {
 						<Button
 							type="submit"
 							disabled={status === 'executing' || !createProductForm.formState.isValid || !createProductForm.formState.isDirty}
-						>Submit</Button>
+						>{editMode ? "Save Changes" : "Create Product"}</Button>
 					</form>
 				</Form>
 			</CardContent>

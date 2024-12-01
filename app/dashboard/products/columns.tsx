@@ -14,6 +14,7 @@ import { MoreHorizontalIcon } from 'lucide-react'
 import { useAction } from 'next-safe-action/hooks'
 import { deleteProduct } from '@/server/actions/deleteProduct'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 export type Product = {
 	id: number
@@ -44,8 +45,6 @@ const ActionCell = ({ row }: { row: Row<Product> }) => {
 		}
 	})
 
-
-
 	const product = row.original
 	return (
 		<DropdownMenu modal={false}>
@@ -53,10 +52,17 @@ const ActionCell = ({ row }: { row: Row<Product> }) => {
 				<Button variant={'ghost'} className='p-2'><MoreHorizontalIcon /></Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				<DropdownMenuItem className='cursor-pointer'>Edit Product</DropdownMenuItem>
+				<DropdownMenuItem 
+					className='cursor-pointer'>
+						<Link href={`/dashboard/add-product?id=${product.id}`}>
+						Edit Product
+						</Link>
+					</DropdownMenuItem>
 				<DropdownMenuItem
-					onClick={() => execute({id: product}.id)}
-					className='dark:focus:bg-destructive focus:bg-destructive/50 cursor-pointer'>Delete Product</DropdownMenuItem>
+					onClick={() => execute({ id: product }.id)}
+					className='dark:focus:bg-destructive focus:bg-destructive/50 cursor-pointer'>
+					Delete Product
+				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	)
@@ -112,6 +118,6 @@ export const columns: ColumnDef<Product>[] = [
 	{
 		accessorKey: "actions",
 		header: "Actions",
-		cell: ActionCell, 
+		cell: ActionCell,
 	}
 ]

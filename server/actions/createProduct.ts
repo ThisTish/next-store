@@ -5,6 +5,7 @@ import { createSafeActionClient } from "next-safe-action"
 import { db } from ".."
 import { products } from "../schema"
 import { eq } from "drizzle-orm"
+import { revalidatePath } from "next/cache"
 
 
 const action = createSafeActionClient()
@@ -25,6 +26,7 @@ export const createProduct = action
 					.set({ description, price, title })
 					.where(eq(products.id, id))
 					.returning()
+					revalidatePath('/dashboard/products')
 				return { success: `Product ${editedProduct[0].title} has been updated` }
 			}
 
@@ -33,7 +35,7 @@ export const createProduct = action
 					.insert(products)
 					.values({ title, description, price, created: new Date() })
 					.returning()
-
+					revalidatePath('/dashboard/products')
 				return { success: `Product ${newProduct[0].title} has been created` }
 			}
 
