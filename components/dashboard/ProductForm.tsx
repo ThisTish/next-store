@@ -23,6 +23,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { DollarSign } from "lucide-react"
 import Tiptap from "./TipTap"
+import { useAction } from "next-safe-action/hooks"
+import { createProduct } from "@/server/actions/createProduct"
 
 const ProductForm = () => {
 
@@ -36,6 +38,27 @@ const ProductForm = () => {
 			mode: 'onChange'
 	})
 
+
+	const { execute, status } = useAction(createProduct, {
+		onSuccess: (data) => {
+
+			if(data.data?.success){
+				console.log(data.data.success)
+			createProductForm.reset()
+			}
+			if(data.data?.error)
+			console.log(data.data.error)
+		},
+		onError: (error) => {
+			console.log(error)
+		}
+	})
+
+
+	const onSubmit = (values: zProductSchema) =>{
+		execute(values)
+	}
+
 	return (
 		<Card>
 			<CardHeader>
@@ -44,7 +67,7 @@ const ProductForm = () => {
 			</CardHeader>
 			<CardContent>
 				<Form {...createProductForm}>
-					<form onSubmit={createProductForm.handleSubmit(()=> console.log('hey'))} className="space-y-8">
+					<form onSubmit={createProductForm.handleSubmit(onSubmit)} className="space-y-8">
 
 						{/* title */}
 						<FormField
@@ -102,7 +125,10 @@ const ProductForm = () => {
 								</FormItem>
 							)}
 						/>
-						<Button type="submit">Submit</Button>
+						<Button 
+						type="submit"
+						disabled={status === 'executing' || !createProductForm.formState.isValid || !createProductForm.formState.isDirty}
+						>Submit</Button>
 					</form>
 				</Form>
 			</CardContent>
