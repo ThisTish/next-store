@@ -3,6 +3,7 @@ import "./globals.css"
 import Nav from "@/components/navigation/Nav"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/providers/ThemeProvider"
+import Toaster from '@/components/ui/toaster'
 
 
 
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children}: Readonly<{
   children: React.ReactNode}>) {
+
+
   return (
     <html lang="en">
       <body className='px-6 max-w-7xl mx-auto'>
@@ -21,6 +24,7 @@ export default function RootLayout({
             defaultTheme="system"
             enableSystem
             >
+            <Toaster />
         <Nav />
         {children}
         </ThemeProvider>

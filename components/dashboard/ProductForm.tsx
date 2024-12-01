@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form"
 import { zProductSchema, ProductSchema } from "@/types/product-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner"
 
 import {
 	Card,
@@ -25,29 +26,39 @@ import { DollarSign } from "lucide-react"
 import Tiptap from "./TipTap"
 import { useAction } from "next-safe-action/hooks"
 import { createProduct } from "@/server/actions/createProduct"
+import { useRouter } from "next/navigation"
 
 const ProductForm = () => {
 
 	const createProductForm = useForm<zProductSchema>({
 		resolver: zodResolver(ProductSchema),
-			defaultValues: {
-				title: '',
-				description: '',
-				price: 0
-			},
-			mode: 'onChange'
+		defaultValues: {
+			title: '',
+			description: '',
+			price: 0
+		},
+		mode: 'onChange'
 	})
 
+	const router = useRouter()
 
 	const { execute, status } = useAction(createProduct, {
 		onSuccess: (data) => {
 
-			if(data.data?.success){
-				console.log(data.data.success)
-			createProductForm.reset()
+			if (data.data?.success) {
+				router.push('/dashboard/products')
+				toast.success(data.data.success)
+
 			}
-			if(data.data?.error)
-			console.log(data.data.error)
+			if (data.data?.error) {
+				console.log(data.data.error)
+				toast.error(data.data.error)
+			}
+
+		},
+
+		onExecute: (data) => {
+			toast.loading('Creating Product')
 		},
 		onError: (error) => {
 			console.log(error)
@@ -55,7 +66,7 @@ const ProductForm = () => {
 	})
 
 
-	const onSubmit = (values: zProductSchema) =>{
+	const onSubmit = (values: zProductSchema) => {
 		execute(values)
 	}
 
@@ -92,13 +103,13 @@ const ProductForm = () => {
 								<FormItem>
 									<FormLabel>Product Description</FormLabel>
 									<FormControl>
-										<Tiptap val={field.value}/>
+										<Tiptap val={field.value} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
-					
+
 						{/* price */}
 						<FormField
 							control={createProductForm.control}
@@ -108,15 +119,15 @@ const ProductForm = () => {
 									<FormLabel>Product Price"</FormLabel>
 									<FormControl>
 										<div className="flex items-center gap-2">
-											<DollarSign 
-											size={32} 
-											className="bg-muted rounded-md p-2"/>
+											<DollarSign
+												size={32}
+												className="bg-muted rounded-md p-2" />
 											<Input
-											type="number"
-											placeholder="10" 
-											step={0.1}
-											min={0}
-											{...field} 
+												type="number"
+												placeholder="10"
+												step={0.1}
+												min={0}
+												{...field}
 											/>
 										</div>
 									</FormControl>
@@ -125,9 +136,9 @@ const ProductForm = () => {
 								</FormItem>
 							)}
 						/>
-						<Button 
-						type="submit"
-						disabled={status === 'executing' || !createProductForm.formState.isValid || !createProductForm.formState.isDirty}
+						<Button
+							type="submit"
+							disabled={status === 'executing' || !createProductForm.formState.isValid || !createProductForm.formState.isDirty}
 						>Submit</Button>
 					</form>
 				</Form>
