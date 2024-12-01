@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { DollarSign } from "lucide-react"
+import Tiptap from "./TipTap"
 
 const ProductForm = () => {
 
@@ -31,7 +32,8 @@ const ProductForm = () => {
 				title: '',
 				description: '',
 				price: 0
-			}
+			},
+			mode: 'onChange'
 	})
 
 	return (
@@ -65,9 +67,9 @@ const ProductForm = () => {
 							name="description"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Product Description"</FormLabel>
+									<FormLabel>Product Description</FormLabel>
 									<FormControl>
-										<Input placeholder="Description of product" {...field} />
+										<Tiptap val={field.value}/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
