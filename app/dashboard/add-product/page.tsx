@@ -1,7 +1,18 @@
-const AddProductPage = () => {
+import ProductForm from "@/components/dashboard/ProductForm"
+import { auth } from "@/server/auth"
+import { redirect } from "next/navigation"
+import { useForm } from "react-hook-form"
+
+const AddProductPage = async () => {
+
+	const session = await auth()
+	if(session?.user.role !== 'admin') return redirect('/dashboard/settings')
+
+	
+
 	return (
 		<div>
-			<h1>Add Product</h1>
+			<ProductForm />
 		</div>
 	)
 }
