@@ -82,7 +82,6 @@ const ProductForm = () => {
 				console.log(data.data.error)
 				toast.error(data.data.error)
 			}
-
 		},
 
 		onExecute: (data) => {

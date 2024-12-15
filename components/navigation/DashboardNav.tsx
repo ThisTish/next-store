@@ -23,7 +23,7 @@ const DashboardNav = ({ allLinks }: DashboardNavProps) => {
 
 	return (
 
-		<nav className="py-2 overflow-hidden">
+		<nav className="py-2 overflow-hidden mb-4">
 			<ul className=" flex gap-6 text-sm font-semibold">
 				<AnimatePresence>
 				{allLinks.map((link, index) => (

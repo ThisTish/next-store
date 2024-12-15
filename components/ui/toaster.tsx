@@ -22,6 +22,8 @@ return null
 			<Toasty 
 			richColors
 			theme={theme as 'light' | 'dark' | 'system' | undefined}
+			visibleToasts={1}
+			closeButton={true}
 			/>
 		)
 	}

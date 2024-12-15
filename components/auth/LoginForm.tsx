@@ -15,7 +15,6 @@ import { Input } from "../ui/input"
 import {
 	InputOTP,
 	InputOTPGroup,
-	InputOTPSeparator,
 	InputOTPSlot,
 } from "@/components/ui/input-otp"
 
@@ -50,8 +49,6 @@ const LoginForm = () => {
 			}
 			if (data.data?.success) {
 				setSuccess(data.data.success)
-				router.push('/dashboard')
-				router.refresh()
 			}
 			if (data.data?.twoFactor) {
 				setShowTwoFactor(true)

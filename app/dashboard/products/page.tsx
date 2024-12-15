@@ -25,7 +25,6 @@ const ProductsPage = async() => {
 
 	return (
 		<div>
-			<h1>Products Page</h1>
 			<DataTable columns={columns} data={dataTable} />
 		</div>
 	)
