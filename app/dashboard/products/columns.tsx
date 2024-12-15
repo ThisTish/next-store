@@ -1,6 +1,10 @@
 "use client"
 
 import Image from 'next/image'
+import Link from 'next/link'
+import { VariantsWithImagesTags } from '@/lib/infer-types'
+import { useAction } from 'next-safe-action/hooks'
+import { deleteProduct } from '@/server/actions/deleteProduct'
 
 import { ColumnDef, Row } from "@tanstack/react-table"
 import {
@@ -9,18 +13,24 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Button } from '@/components/ui/button'
-import { MoreHorizontalIcon } from 'lucide-react'
-import { useAction } from 'next-safe-action/hooks'
-import { deleteProduct } from '@/server/actions/deleteProduct'
+import { MoreHorizontalIcon, PlusCircle } from 'lucide-react'
+
 import { toast } from 'sonner'
-import Link from 'next/link'
+import ProductVariant from './productVariant'
+
 
 export type Product = {
 	id: number
 	title: string
 	price: number
-	variants: any
+	variants: VariantsWithImagesTags[]
 	image: string
 }
 
@@ -52,12 +62,12 @@ const ActionCell = ({ row }: { row: Row<Product> }) => {
 				<Button variant={'ghost'} className='p-2'><MoreHorizontalIcon /></Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				<DropdownMenuItem 
+				<DropdownMenuItem
 					className='cursor-pointer'>
-						<Link href={`/dashboard/add-product?id=${product.id}`}>
+					<Link href={`/dashboard/add-product?id=${product.id}`}>
 						Edit Product
-						</Link>
-					</DropdownMenuItem>
+					</Link>
+				</DropdownMenuItem>
 				<DropdownMenuItem
 					onClick={() => execute({ id: product }.id)}
 					className='dark:focus:bg-destructive focus:bg-destructive/50 cursor-pointer'>
@@ -76,6 +86,47 @@ export const columns: ColumnDef<Product>[] = [
 	{
 		accessorKey: "title",
 		header: "Title",
+	},
+	{
+		accessorKey: 'variants',
+		header: 'Variants',
+		cell: ({ row }) => {
+			const variants = row.getValue('variants') as VariantsWithImagesTags[]
+			return (
+				<div>
+					{variants.map((variant) => (
+						<div key={variant.id}>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<ProductVariant productId={variant.productId} variant={variant} editMode={true}>
+											<div className="w-5 h-5 rounded-full" key={variant.id} style={{ background: variant.color }}></div>
+										</ProductVariant>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>{variant.productType}</p>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						</div>
+					))}
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<span>
+								<ProductVariant editMode={false} productId={row.original.id}>
+									<PlusCircle className='text-primary' width={16} height={16} />
+								</ProductVariant>
+							</span>
+							</TooltipTrigger>
+							<TooltipContent>
+								Add a variant
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+				</div>
+			)
+		}
 	},
 	{
 		accessorKey: "price",
